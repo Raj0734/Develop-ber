@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple To-Do App</title>
+  <style>
+  /* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f9;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  color: #333;
+}
+
+#login-section, #todo-section {
+  width: 100%;
+  max-width: 400px;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 20px;
+  color: #007BFF;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 16px;
+  box-sizing: border-box;
+}
+
+button {
+  width: 50%;
+  padding: 10px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007BFF;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 10px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Task List Styles */
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  margin: 5px 0;
+  background: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+li button {
+  background-color: #dc3545;
+  font-size: 14px;
+  padding: 5px 10px;
+}
+
+li button:hover {
+  background-color: #a71d2a;
+}
+
+/* Responsive Design */
+@media (max-width: 500px) {
+  body {
+    padding: 20px;
+  }
+
+  input, button {
+    font-size: 14px;
+    padding: 8px;
+  }
+}
+
+    </style>
+</head>
+<body>
+  <div id="login-section">
+    <h2>Login</h2>
+    <input type="text" id="username" placeholder="Enter username">
+    <button id="login-btn">Login</button>
+  </div>
+
+  <div id="todo-section" class="hidden">
+    <h2>Welcome, <span id="user-display"></span></h2>
+    <button id="logout-btn">Logout</button>
+    <input type="text" id="new-task" placeholder="New Task">
+    <button id="add-task-btn">Add Task</button>
+    <ul id="task-list"></ul>
+  </div>
+
+  <script>
+    const loginSection = document.getElementById('login-section');
+    const todoSection = document.getElementById('todo-section');
+    const usernameInput = document.getElementById('username');
+    const userDisplay = document.getElementById('user-display');
+    const taskList = document.getElementById('task-list');
+    const newTaskInput = document.getElementById('new-task');
+
+    let users = JSON.parse(localStorage.getItem('users')) || {};
+    let currentUser = null;
+
+    function renderTasks() {
+      const tasks = users[currentUser] || [];
+      taskList.innerHTML = tasks
+        .map((task, index) => `<li>${task} <button onclick="deleteTask(${index})">Delete</button></li>`)
+        .join('');
+    }
+
+    function login() {
+      const username = usernameInput.value.trim();
+      if (!username) return;
+      currentUser = username;
+      users[username] = users[username] || [];
+      localStorage.setItem('users', JSON.stringify(users));
+      userDisplay.textContent = username;
+      usernameInput.value = '';
+      loginSection.classList.add('hidden');
+      todoSection.classList.remove('hidden');
+      renderTasks();
+    }
+
+    function logout() {
+      currentUser = null;
+      loginSection.classList.remove('hidden');
+      todoSection.classList.add('hidden');
+    }
+
+    function addTask() {
+      const task = newTaskInput.value.trim();
+      if (!task) return;
+      users[currentUser].push(task);
+      localStorage.setItem('users', JSON.stringify(users));
+      newTaskInput.value = '';
+      renderTasks();
+    }
+
+    function deleteTask(index) {
+      users[currentUser].splice(index, 1);
+      localStorage.setItem('users', JSON.stringify(users));
+      renderTasks();
+    }
+
+    document.getElementById('login-btn').addEventListener('click', login);
+    document.getElementById('logout-btn').addEventListener('click', logout);
+    document.getElementById('add-task-btn').addEventListener('click', addTask);
+  </script>
+</body>
+</html>
