@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MicroBlog</title>
+    <style>
+        /* Global Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header */
+        header {
+            background-color: #6200ea;
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 2rem;
+        }
+
+        /* Post Section */
+        .post-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .post-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #6200ea;
+        }
+
+        textarea {
+            width: 100%;
+            height: 100px;
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            resize: none;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            background-color: #6200ea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #5a00d1;
+        }
+
+        /* Feed Section */
+        .feed-section {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .feed-section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: #6200ea;
+        }
+
+        #feed {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .post {
+            background: #f1f1f1;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .placeholder {
+            color: #aaa;
+            text-align: center;
+            font-size: 1rem;
+            margin: 20px 0;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 600px) {
+            header h1 {
+                font-size: 1.5rem;
+            }
+
+            textarea {
+                height: 80px;
+            }
+
+            button {
+                font-size: 0.9rem;
+            }
+
+            .post {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MicroBlog</h1>
+        </header>
+        <main>
+            <section class="post-section">
+                <h2>Create a Post</h2>
+                <textarea id="postContent" placeholder="What's on your mind?"></textarea>
+                <button id="postButton">Post</button>
+            </section>
+            <section class="feed-section">
+                <h2>Your Feed</h2>
+                <div id="feed">
+                    <p class="placeholder">No posts yet. Create a post to get started!</p>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const postButton = document.getElementById("postButton");
+            const postContent = document.getElementById("postContent");
+            const feed = document.getElementById("feed");
+
+            let posts = [];
+
+            const renderPosts = () => {
+                feed.innerHTML = ""; // Clear the feed
+                if (posts.length === 0) {
+                    feed.innerHTML = '<p class="placeholder">No posts yet. Create a post to get started!</p>';
+                } else {
+                    posts.forEach((post, index) => {
+                        const postDiv = document.createElement("div");
+                        postDiv.className = "post";
+                        postDiv.innerHTML = `<strong>Post #${index + 1}</strong><p>${post}</p>`;
+                        feed.appendChild(postDiv);
+                    });
+                }
+            };
+
+            postButton.addEventListener("click", () => {
+                const content = postContent.value.trim();
+                if (content) {
+                    posts.unshift(content); // Add new post at the top
+                    postContent.value = ""; // Clear textarea
+                    renderPosts();
+                } else {
+                    alert("Please enter some content!");
+                }
+            });
+
+            renderPosts();
+        });
+    </script>
+</body>
+</html>
